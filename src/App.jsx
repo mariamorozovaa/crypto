@@ -8,14 +8,27 @@ function App() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    function loadData() {
-      setLoading(true);
-      setCrypto(fetchCryptoList());
+    async function loadData() {
+      try {
+        setLoading(true);
+        const data = await fetchCryptoList({ currency: "usd" });
+        setCrypto(data);
+      } catch (e) {
+        setError(e);
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
   }, []);
 
-  return <div>{loading && <p>Загрузка...</p>}</div>;
+  return (
+    <div>
+      {loading && <p>Загрузка...</p>}
+      {error && <p>Ошибка</p>}
+      <p>Загружено {crypto.length} монет</p>
+    </div>
+  );
 }
 
 export default App;
