@@ -9,10 +9,13 @@ export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
 
   return (
     <div className="crypto-card">
-      <img className="crypto-logo" src={crypto.image} alt="logo-crypto" />
-      <p>
-        Название: {crypto.name} ({crypto.symbol}) {isFavorite && <span>⭐️</span>}
-      </p>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <img className="crypto-logo" src={crypto.image} alt="logo-crypto" />
+        <h3>
+          {crypto.name} ({crypto.symbol}) {isFavorite && <span>⭐️</span>}
+        </h3>
+      </div>
+
       <p>Текущая цена: {formatPrice(crypto.current_price)}</p>
 
       {crypto.price_change_percentage_24h > 0 ? (

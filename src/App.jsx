@@ -5,11 +5,13 @@ import Header from "./components/Header";
 import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
 import CryptoList from "./components/CryptoList";
+import SearchBar from "./components/SearchBar";
 
 function App() {
   const [crypto, setCrypto] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -27,14 +29,45 @@ function App() {
     loadData();
   }, []);
 
+  const filteredCrypto = crypto.filter((coin) => {
+    if (!searchQuery.trim()) return true;
+
+    const query = searchQuery.toLowerCase();
+    return coin.name.toLowerCase().includes(query) || coin.symbol.toLowerCase().includes(query);
+  });
+
+  function handleSearch(value) {
+    setSearchQuery(value);
+  }
+
   return (
-    <div>
+    <div className="app">
       {loading && <Loader />}
       <Header />
+      <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
+      {!loading && filteredCrypto.length === 0 && <ErrorMessage message={"Ничего не найдено"} />}
       {error && <ErrorMessage message={error} />}
-      <CryptoList cryptos={crypto} />
+      <CryptoList cryptos={filteredCrypto} />
     </div>
   );
 }
 
 export default App;
+
+// ЗАДАНИЕ 4.2: Логика поиска в App
+// От заказчика: "Реализуйте поиск. Когда пользователь вводит текст, должны показываться только подходящие криптовалюты."
+// Что нужно добавить в App.jsx:
+// Состояние для поиска:
+// searchQuery - текущий запрос (строка)
+// Функция handleSearch:
+// Принимает новое значение
+// Обновляет searchQuery
+
+// Логика фильтрации:
+// Если searchQuery пустой → показать все криптовалюты
+// Если searchQuery НЕ пустой → фильтровать по:
+// Название содержит запрос (игнорируя регистр)
+// ИЛИ символ содержит запрос (игнорируя регистр)
+// Отображение результатов:
+// Передавать отфильтрованный массив в CryptoList
+// Если после фильтрации массив пустой → показать "Ничего не найдено"

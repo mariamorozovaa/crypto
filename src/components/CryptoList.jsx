@@ -1,6 +1,5 @@
 import CryptoCard from "./CryptoCard";
 import "../styles/CryptoList.css";
-import ErrorMessage from "./ErrorMessage";
 import { useState } from "react";
 
 export default function CryptoList({ cryptos }) {
@@ -15,7 +14,6 @@ export default function CryptoList({ cryptos }) {
 
   return (
     <div className="crypto-list">
-      {cryptos.length === 0 && <ErrorMessage message={"Нет данных"} />}
       {cryptos.map((crypto) => (
         <CryptoCard
           key={crypto.id}
