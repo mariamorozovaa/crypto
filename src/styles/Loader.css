@@ -1,3 +1,13 @@
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
 .loader {
   width: 50px;
   aspect-ratio: 1;

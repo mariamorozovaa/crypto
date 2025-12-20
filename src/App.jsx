@@ -4,6 +4,7 @@ import { fetchCryptoList } from "./services/cryptoAPI";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
+import CryptoList from "./components/CryptoList";
 
 function App() {
   const [crypto, setCrypto] = useState([]);
@@ -15,7 +16,7 @@ function App() {
       try {
         setError(null);
         setLoading(true);
-        const data = await fetchCryptoList({ currency: "usd" });
+        const data = await fetchCryptoList();
         setCrypto(data);
       } catch (e) {
         setError(e.message);
@@ -28,10 +29,10 @@ function App() {
 
   return (
     <div>
-      <Header />
       {loading && <Loader />}
+      <Header />
       {error && <ErrorMessage message={error} />}
-      <p>Загружено {crypto.length} монет</p>
+      <CryptoList cryptos={crypto} />
     </div>
   );
 }
