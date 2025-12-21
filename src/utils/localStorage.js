@@ -1,4 +1,5 @@
 const FAVORITES_KEY = "cryptoTracker_favorites";
+const CURRENCY_KEY = "cryptoTracker_currency";
 
 export function getFavorites() {
   try {
@@ -37,5 +38,36 @@ export function isFavorite(cryptoId) {
     return favorites.includes(cryptoId);
   } catch (e) {
     console.error(e.message);
+  }
+}
+
+export function getCurrency() {
+  try {
+    const currCurrency = localStorage.getItem(CURRENCY_KEY);
+    return currCurrency ? JSON.parse(currCurrency) : "usd";
+  } catch (e) {
+    console.error("Ошибка чтения из localStorage", e.message);
+    return "usd";
+  }
+}
+
+export function saveCurrency(currency) {
+  try {
+    localStorage.setItem(CURRENCY_KEY, JSON.stringify(currency));
+  } catch (e) {
+    console.error("Ошибка чтения из localStorage", e.message);
+    return "usd";
+  }
+}
+
+export function getCurrencySymbol() {
+  const currCurrency = getCurrency();
+  switch (currCurrency) {
+    case "eur":
+      return "€";
+    case "rub":
+      return "₽";
+    default:
+      return "$";
   }
 }

@@ -6,8 +6,9 @@ import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
 import CryptoList from "./components/CryptoList";
 import SearchBar from "./components/SearchBar";
-import { getFavorites, addToFavorites, removeFromFavorites, isFavorite } from "./utils/localStorage";
+import { getFavorites, addToFavorites, removeFromFavorites, isFavorite, getCurrency, saveCurrency } from "./utils/localStorage";
 import FavoritesList from "./components/FavoritesList";
+import CurrencySelector from "./components/CurrencySelector";
 
 function App() {
   const [crypto, setCrypto] = useState([]);
@@ -15,13 +16,14 @@ function App() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [favorites, setFavorites] = useState([]);
+  const [currency, setCurrency] = useState(getCurrency());
 
   useEffect(() => {
     async function loadData() {
       try {
         setError(null);
         setLoading(true);
-        const data = await fetchCryptoList();
+        const data = await fetchCryptoList(currency);
         setCrypto(data);
       } catch (e) {
         setError(e.message);
@@ -30,7 +32,7 @@ function App() {
       }
     }
     loadData();
-  }, []);
+  }, [currency]);
 
   useEffect(() => {
     function loadFavorites() {
@@ -64,10 +66,19 @@ function App() {
     setFavorites(getFavorites());
   }
 
+  function handleCurrencyChange(currency) {
+    saveCurrency(currency);
+    setCurrency(currency);
+  }
+
   return (
     <div className="app">
       {loading && <Loader />}
-      <Header />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Header />
+        <CurrencySelector currency={currency} onChange={(e) => handleCurrencyChange(e.target.value)} />
+      </div>
+
       <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
       {!loading && filteredCrypto.length === 0 && crypto.length > 0 && <ErrorMessage message={"Ничего не найдено"} />}
       {error && <ErrorMessage message={error} />}

@@ -1,4 +1,5 @@
 import "../styles/CryptoCard.css";
+import { getCurrencySymbol } from "../utils/localStorage";
 
 export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
   function formatPrice(price) {
@@ -23,7 +24,10 @@ export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
         </button>
       </div>
 
-      <p>Текущая цена: {formatPrice(crypto.current_price)}</p>
+      <p>
+        Текущая цена: {formatPrice(crypto.current_price)}
+        {getCurrencySymbol()}
+      </p>
 
       {crypto.price_change_percentage_24h > 0 ? (
         <p>
