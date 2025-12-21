@@ -1,25 +1,15 @@
 import CryptoCard from "./CryptoCard";
 import "../styles/CryptoList.css";
-import { useState } from "react";
 
-export default function CryptoList({ cryptos }) {
-  const [favorites, setFavorites] = useState({});
-
-  function handleToggleFavorite(id) {
-    setFavorites((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  }
-
+export default function CryptoList({ cryptos, favorites, onToggleFavorite }) {
   return (
     <div className="crypto-list">
       {cryptos.map((crypto) => (
         <CryptoCard
           key={crypto.id}
           crypto={crypto}
-          isFavorite={!!favorites[crypto.id]}
-          onToggleFavorite={() => handleToggleFavorite(crypto.id)}
+          isFavorite={favorites.includes(crypto.id)}
+          onToggleFavorite={onToggleFavorite}
         />
       ))}
     </div>

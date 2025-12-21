@@ -6,12 +6,14 @@ import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
 import CryptoList from "./components/CryptoList";
 import SearchBar from "./components/SearchBar";
+import { getFavorites, addToFavorites, removeFromFavorites, isFavorite } from "./utils/localStorage";
 
 function App() {
   const [crypto, setCrypto] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     async function loadData() {
@@ -29,6 +31,18 @@ function App() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    function loadFavorites() {
+      try {
+        const data = getFavorites();
+        setFavorites(data);
+      } catch (e) {
+        setError(e.message);
+      }
+    }
+    loadFavorites();
+  }, []);
+
   const filteredCrypto = crypto.filter((coin) => {
     if (!searchQuery.trim()) return true;
 
@@ -40,14 +54,23 @@ function App() {
     setSearchQuery(value);
   }
 
+  function handleToggleFavorite(cryptoId) {
+    if (isFavorite(cryptoId)) {
+      removeFromFavorites(cryptoId);
+    } else {
+      addToFavorites(cryptoId);
+    }
+    setFavorites(getFavorites());
+  }
+
   return (
     <div className="app">
       {loading && <Loader />}
       <Header />
       <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
-      {!loading && filteredCrypto.length === 0 && <ErrorMessage message={"Ничего не найдено"} />}
+      {!loading && filteredCrypto.length === 0 && crypto.length > 0 && <ErrorMessage message={"Ничего не найдено"} />}
       {error && <ErrorMessage message={error} />}
-      <CryptoList cryptos={filteredCrypto} />
+      <CryptoList cryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
     </div>
   );
 }
