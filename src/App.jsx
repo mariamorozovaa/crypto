@@ -7,6 +7,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import CryptoList from "./components/CryptoList";
 import SearchBar from "./components/SearchBar";
 import { getFavorites, addToFavorites, removeFromFavorites, isFavorite } from "./utils/localStorage";
+import FavoritesList from "./components/FavoritesList";
 
 function App() {
   const [crypto, setCrypto] = useState([]);
@@ -70,6 +71,7 @@ function App() {
       <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
       {!loading && filteredCrypto.length === 0 && crypto.length > 0 && <ErrorMessage message={"Ничего не найдено"} />}
       {error && <ErrorMessage message={error} />}
+      <FavoritesList filteredCryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
       <CryptoList cryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
     </div>
   );

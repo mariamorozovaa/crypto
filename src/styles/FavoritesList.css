@@ -1,0 +1,5 @@
+.crypto-card-favorite {
+  display: flex;
+  max-width: 250px;
+  margin: 5px;
+}
