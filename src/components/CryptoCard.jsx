@@ -1,15 +1,8 @@
 import "../styles/CryptoCard.css";
 import { getCurrencySymbol } from "../utils/localStorage";
+import { formatNumber } from "../utils/formatData";
 
 export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
-  function formatPrice(price) {
-    if (price === null || price === undefined) return "—";
-    if (price > 1000000000) return (price / 1000000000).toFixed(2) + "B";
-    if (price > 1000000) return (price / 1000000).toFixed(2) + "M";
-
-    return price.toFixed(2);
-  }
-
   return (
     <div className="crypto-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px" }}>
@@ -25,24 +18,24 @@ export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
       </div>
 
       <p>
-        Текущая цена: {formatPrice(crypto.current_price)}
+        Текущая цена: {formatNumber(crypto.current_price)}
         {getCurrencySymbol()}
       </p>
 
       {crypto.price_change_percentage_24h > 0 ? (
         <p>
           Изменение за 24 часа:
-          <span style={{ color: "green" }}> +{formatPrice(crypto.price_change_percentage_24h)}%</span>
+          <span style={{ color: "green" }}> +{formatNumber(crypto.price_change_percentage_24h)}%</span>
         </p>
       ) : (
         <p>
           Изменение за 24 часа:
-          <span style={{ color: "red" }}> {formatPrice(crypto.price_change_percentage_24h)}%</span>
+          <span style={{ color: "red" }}> {formatNumber(crypto.price_change_percentage_24h)}%</span>
         </p>
       )}
 
-      <p>Рыночная капитализация: {formatPrice(crypto.market_cap)}</p>
-      <p>Объём торгов: {formatPrice(crypto.total_volume)}</p>
+      <p>Рыночная капитализация: {formatNumber(crypto.market_cap)}</p>
+      <p>Объём торгов: {formatNumber(crypto.total_volume)}</p>
     </div>
   );
 }

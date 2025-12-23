@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { fetchCryptoList } from "./services/cryptoAPI";
+import { fetchCryptoList, fetchGlobalData } from "./services/cryptoAPI";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
@@ -9,6 +9,7 @@ import SearchBar from "./components/SearchBar";
 import { getFavorites, addToFavorites, removeFromFavorites, isFavorite, getCurrency, saveCurrency } from "./utils/localStorage";
 import FavoritesList from "./components/FavoritesList";
 import CurrencySelector from "./components/CurrencySelector";
+import MarketStats from "./components/MarketStats";
 
 function App() {
   const [crypto, setCrypto] = useState([]);
@@ -17,14 +18,16 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [favorites, setFavorites] = useState([]);
   const [currency, setCurrency] = useState(getCurrency());
+  const [globalData, setGlobalData] = useState(getCurrency());
 
   useEffect(() => {
     async function loadData() {
       try {
         setError(null);
         setLoading(true);
-        const data = await fetchCryptoList(currency);
-        setCrypto(data);
+        const [cryptoData, globalData] = await Promise.all([fetchCryptoList(currency), fetchGlobalData()]);
+        setCrypto(cryptoData);
+        setGlobalData(globalData);
       } catch (e) {
         setError(e.message);
       } finally {
@@ -73,15 +76,16 @@ function App() {
 
   return (
     <div className="app">
+      {!loading && filteredCrypto.length === 0 && crypto.length > 0 && <ErrorMessage message={"Ничего не найдено"} />}
+      {error && <ErrorMessage message={error} />}
       {loading && <Loader />}
+
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Header />
         <CurrencySelector currency={currency} onChange={(e) => handleCurrencyChange(e.target.value)} />
       </div>
-
+      <MarketStats globalData={globalData} currency={currency} />
       <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
-      {!loading && filteredCrypto.length === 0 && crypto.length > 0 && <ErrorMessage message={"Ничего не найдено"} />}
-      {error && <ErrorMessage message={error} />}
       <FavoritesList filteredCryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
       <CryptoList cryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
     </div>

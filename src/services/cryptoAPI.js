@@ -6,7 +6,19 @@ export async function fetchCryptoList(currency = "usd") {
   );
 
   if (!response.ok) {
-    throw new Error("Ошибка загрузки данных");
+    throw new Error("Ошибка загрузки данных о криптовалютах");
+  }
+
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+export async function fetchGlobalData() {
+  const response = await fetch(`https://api.coingecko.com/api/v3/global?x_cg_demo_api_key=${API_KEY}`);
+
+  if (!response.ok) {
+    throw new Error("Ошибка загрузки данных статистики");
   }
 
   const data = await response.json();
