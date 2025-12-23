@@ -19,22 +19,30 @@ function App() {
   const [favorites, setFavorites] = useState([]);
   const [currency, setCurrency] = useState(getCurrency());
   const [globalData, setGlobalData] = useState(getCurrency());
+  const [lastUpdate, setLastUpdate] = useState(null);
+
+  async function loadData({ isSilentRefresh = false } = {}) {
+    try {
+      setError(null);
+      if (!isSilentRefresh) setLoading(true);
+
+      const [cryptoData, globalData] = await Promise.all([fetchCryptoList(currency), fetchGlobalData()]);
+      setCrypto(cryptoData);
+      setGlobalData(globalData);
+      setLastUpdate(new Date().toLocaleTimeString());
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      if (!isSilentRefresh) setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        setError(null);
-        setLoading(true);
-        const [cryptoData, globalData] = await Promise.all([fetchCryptoList(currency), fetchGlobalData()]);
-        setCrypto(cryptoData);
-        setGlobalData(globalData);
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
+    async function updateData() {
+      await loadData({ silent: false });
+      setLastUpdate(new Date().toLocaleTimeString());
     }
-    loadData();
+    updateData();
   }, [currency]);
 
   useEffect(() => {
@@ -48,6 +56,18 @@ function App() {
     }
     loadFavorites();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadData({ isSilentRefresh: true });
+    }, 60000);
+    setLastUpdate(new Date().toLocaleTimeString());
+    return () => clearInterval(interval);
+  }, []);
+
+  function handleRefresh() {
+    loadData({ isSilentRefresh: false });
+  }
 
   const filteredCrypto = crypto.filter((coin) => {
     if (!searchQuery.trim()) return true;
@@ -80,8 +100,13 @@ function App() {
       {error && <ErrorMessage message={error} />}
       {loading && <Loader />}
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Header />
+
+        <button onClick={handleRefresh} disabled={loading}>
+          🔄 Обновить
+        </button>
+        <p>Обновлено в {lastUpdate}</p>
         <CurrencySelector currency={currency} onChange={(e) => handleCurrencyChange(e.target.value)} />
       </div>
       <MarketStats globalData={globalData} currency={currency} />
