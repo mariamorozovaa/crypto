@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import "./App.css";
 import { fetchCryptoList, fetchGlobalData } from "./services/cryptoAPI";
 import Header from "./components/Header";
@@ -21,6 +21,7 @@ function App() {
   const [globalData, setGlobalData] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
   const [isRateLimited, setIsRateLimited] = useState(false);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
   async function loadData({ isSilentRefresh = false } = {}) {
     try {
@@ -63,46 +64,58 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (isRateLimited) return;
+    const intervalTime = isRateLimited ? 120000 : 60000;
     const interval = setInterval(() => {
       loadData({ isSilentRefresh: true });
-    }, 60000);
+    }, intervalTime);
     return () => clearInterval(interval);
   }, [currency, isRateLimited]);
 
-  function handleRefresh() {
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const handleRefresh = useCallback(() => {
     loadData({ isSilentRefresh: false });
-  }
+  }, []);
 
-  const filteredCrypto = crypto.filter((coin) => {
-    if (!searchQuery.trim()) return true;
+  const filteredCrypto = useMemo(() => {
+    const query = debouncedSearch.trim().toLowerCase();
+    if (!query) return crypto;
 
-    const query = searchQuery.toLowerCase();
-    return coin.name.toLowerCase().includes(query) || coin.symbol.toLowerCase().includes(query);
-  });
+    return crypto.filter((coin) => coin.name.toLowerCase().includes(query) || coin.symbol.toLowerCase().includes(query));
+  }, [crypto, debouncedSearch]);
 
-  function handleSearch(value) {
+  const favoriteCryptos = useMemo(() => {
+    return crypto.filter((coin) => favorites.includes(coin.id));
+  }, [crypto, favorites]);
+
+  const handleSearch = useCallback((value) => {
     setSearchQuery(value);
-  }
+  }, []);
 
-  function handleToggleFavorite(cryptoId) {
+  const handleToggleFavorite = useCallback((cryptoId) => {
     if (isFavorite(cryptoId)) {
       removeFromFavorites(cryptoId);
     } else {
       addToFavorites(cryptoId);
     }
     setFavorites(getFavorites());
-  }
+  }, []);
 
-  function handleCurrencyChange(currency) {
+  const handleCurrencyChange = useCallback((currency) => {
     saveCurrency(currency);
     setCurrency(currency);
-  }
+  }, []);
 
   return (
     <div className="app">
-      {!loading && filteredCrypto.length === 0 && crypto.length > 0 && (
-        <ErrorMessage message={`Ничего не найдено по запросу "${searchQuery}"`} />
+      {!loading && filteredCrypto.length === 0 && debouncedSearch && (
+        <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
       )}
       {!loading && crypto.length === 0 && !error && <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />}
       {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
@@ -118,9 +131,9 @@ function App() {
       <MarketStats globalData={globalData} currency={currency} />
       <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
       {favorites.length > 0 && (
-        <FavoritesList filteredCryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+        <FavoritesList filteredCryptos={favoriteCryptos} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
       )}
-      <CryptoList cryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+      <CryptoList cryptos={filteredCrypto} onToggleFavorite={handleToggleFavorite} />
     </div>
   );
 }

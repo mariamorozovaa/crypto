@@ -1,20 +1,16 @@
 import CryptoCard from "./CryptoCard";
 import "../styles/FavoritesList.css";
 
-export default function FavoritesList({ filteredCryptos, favorites, onToggleFavorite }) {
+export default function FavoritesList({ filteredCryptos, onToggleFavorite }) {
   return (
     <div>
-      <h2>Избранное</h2>
+      {filteredCryptos.length > 0 && <h2>Избранное</h2>}
       <div style={{ display: "flex", overflowX: "auto", gap: "15px" }}>
-        {filteredCryptos.map((crypto) =>
-          favorites.includes(crypto.id) ? (
-            <div key={crypto.id} className="crypto-card-favorite">
-              <CryptoCard crypto={crypto} isFavorite={true} onToggleFavorite={onToggleFavorite} />
-            </div>
-          ) : (
-            ""
-          )
-        )}
+        {filteredCryptos.map((crypto) => (
+          <div key={crypto.id} className="crypto-card-favorite">
+            <CryptoCard crypto={crypto} isFavorite={true} onToggleFavorite={onToggleFavorite} />
+          </div>
+        ))}
       </div>
     </div>
   );
