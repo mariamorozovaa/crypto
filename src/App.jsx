@@ -18,8 +18,9 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [favorites, setFavorites] = useState([]);
   const [currency, setCurrency] = useState(getCurrency());
-  const [globalData, setGlobalData] = useState(getCurrency());
+  const [globalData, setGlobalData] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [isRateLimited, setIsRateLimited] = useState(false);
 
   async function loadData({ isSilentRefresh = false } = {}) {
     try {
@@ -30,8 +31,13 @@ function App() {
       setCrypto(cryptoData);
       setGlobalData(globalData);
       setLastUpdate(new Date().toLocaleTimeString());
+      setIsRateLimited(false);
     } catch (e) {
       setError(e.message);
+
+      if (e.message === "Превышен лимит запросов") {
+        setIsRateLimited(true);
+      }
     } finally {
       if (!isSilentRefresh) setLoading(false);
     }
@@ -39,8 +45,7 @@ function App() {
 
   useEffect(() => {
     async function updateData() {
-      await loadData({ silent: false });
-      setLastUpdate(new Date().toLocaleTimeString());
+      await loadData({ isSilentRefresh: false });
     }
     updateData();
   }, [currency]);
@@ -58,12 +63,12 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (isRateLimited) return;
     const interval = setInterval(() => {
       loadData({ isSilentRefresh: true });
     }, 60000);
-    setLastUpdate(new Date().toLocaleTimeString());
     return () => clearInterval(interval);
-  }, []);
+  }, [currency, isRateLimited]);
 
   function handleRefresh() {
     loadData({ isSilentRefresh: false });
@@ -96,14 +101,15 @@ function App() {
 
   return (
     <div className="app">
-      {!loading && filteredCrypto.length === 0 && crypto.length > 0 && <ErrorMessage message={"Ничего не найдено"} />}
-      {error && <ErrorMessage message={error} />}
+      {!loading && filteredCrypto.length === 0 && crypto.length > 0 && (
+        <ErrorMessage message={`Ничего не найдено по запросу "${searchQuery}"`} />
+      )}
+      {!loading && crypto.length === 0 && !error && <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />}
+      {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
       {loading && <Loader />}
-
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Header />
-
-        <button onClick={handleRefresh} disabled={loading}>
+        <button onClick={handleRefresh} disabled={loading || isRateLimited}>
           🔄 Обновить
         </button>
         <p>Обновлено в {lastUpdate}</p>
@@ -111,7 +117,9 @@ function App() {
       </div>
       <MarketStats globalData={globalData} currency={currency} />
       <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
-      <FavoritesList filteredCryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+      {favorites.length > 0 && (
+        <FavoritesList filteredCryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+      )}
       <CryptoList cryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
     </div>
   );
