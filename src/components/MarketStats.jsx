@@ -4,7 +4,6 @@ import { formatNumber } from "../utils/formatData";
 export default function MarketStats({ globalData, currency }) {
   return (
     <div className="market-stats">
-      <h2>Статистика</h2>
       <p>
         💰 Общая капитализация: {formatNumber(globalData?.data?.total_market_cap?.[currency])} {currency}
       </p>

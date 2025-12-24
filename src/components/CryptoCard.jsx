@@ -6,12 +6,14 @@ export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
   return (
     <div className="crypto-card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px" }}>
-        <img className="crypto-logo" src={crypto.image} alt="logo-crypto" />
+        <img className="crypto-logo" src={crypto.image} alt={`Логотип ${crypto.name}`} />
         <h3>
           {crypto.name} ({crypto.symbol}){" "}
         </h3>
         <button
           onClick={() => onToggleFavorite(crypto.id)}
+          aria-pressed={isFavorite}
+          aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
           style={{ color: "orange", fontSize: "25px", background: "white", border: "none", cursor: "pointer" }}>
           {isFavorite ? "★" : "☆"}
         </button>

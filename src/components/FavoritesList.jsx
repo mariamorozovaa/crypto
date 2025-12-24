@@ -4,7 +4,6 @@ import "../styles/FavoritesList.css";
 export default function FavoritesList({ filteredCryptos, onToggleFavorite }) {
   return (
     <div>
-      {filteredCryptos.length > 0 && <h2>Избранное</h2>}
       <div style={{ display: "flex", overflowX: "auto", gap: "15px" }}>
         {filteredCryptos.map((crypto) => (
           <div key={crypto.id} className="crypto-card-favorite">

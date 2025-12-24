@@ -63,13 +63,13 @@ function App() {
     loadFavorites();
   }, []);
 
-  useEffect(() => {
-    const intervalTime = isRateLimited ? 120000 : 60000;
-    const interval = setInterval(() => {
-      loadData({ isSilentRefresh: true });
-    }, intervalTime);
-    return () => clearInterval(interval);
-  }, [currency, isRateLimited]);
+  // useEffect(() => {
+  //   const intervalTime = isRateLimited ? 120000 : 60000;
+  //   const interval = setInterval(() => {
+  //     loadData({ isSilentRefresh: true });
+  //   }, intervalTime);
+  //   return () => clearInterval(interval);
+  // }, [currency, isRateLimited]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -114,26 +114,46 @@ function App() {
 
   return (
     <div className="app">
-      {!loading && filteredCrypto.length === 0 && debouncedSearch && (
-        <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
-      )}
-      {!loading && crypto.length === 0 && !error && <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />}
-      {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
+      <div role="alert">
+        {!loading && filteredCrypto.length === 0 && debouncedSearch && (
+          <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
+        )}
+        {!loading && crypto.length === 0 && !error && (
+          <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />
+        )}
+        {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
+      </div>
       {loading && <Loader />}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Header />
-        <button onClick={handleRefresh} disabled={loading || isRateLimited}>
+        <button onClick={handleRefresh} disabled={loading || isRateLimited} aria-label="Обновить данные">
           🔄 Обновить
         </button>
-        <p>Обновлено в {lastUpdate}</p>
+        <p aria-live="polite">Обновлено в {lastUpdate}</p>
         <CurrencySelector currency={currency} onChange={(e) => handleCurrencyChange(e.target.value)} />
-      </div>
-      <MarketStats globalData={globalData} currency={currency} />
-      <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
-      {favorites.length > 0 && (
-        <FavoritesList filteredCryptos={favoriteCryptos} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
-      )}
-      <CryptoList cryptos={filteredCrypto} onToggleFavorite={handleToggleFavorite} />
+      </header>
+
+      <main>
+        <section aria-labelledby="market-stats-title">
+          <h2 id="market-stats-title">Статистика</h2>
+          <MarketStats globalData={globalData} currency={currency} />
+        </section>
+        <section aria-labelledby="search-title">
+          <h2 id="search-title">Поиск криптовалют</h2>
+          <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
+        </section>
+        {favorites.length > 0 && (
+          <section aria-labelledby="crypto-favorites-title">
+            <h2 id="crypto-favorites-title">Избранное</h2>
+            <FavoritesList filteredCryptos={favoriteCryptos} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+          </section>
+        )}
+        <section aria-labelledby="crypto-list-title">
+          <h2 id="crypto-list-title">Список криптовалют</h2>
+          <CryptoList cryptos={filteredCrypto} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+        </section>
+      </main>
     </div>
   );
 }
