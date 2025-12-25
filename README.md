@@ -1,16 +1,159 @@
-# React + Vite
+# 🚀 Crypto Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение для отслеживания криптовалют в реальном времени с поддержкой поиска, избранного, смены валюты и автоматического обновления данных.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 Описание проекта
 
-## React Compiler
+**Crypto Tracker** — это SPA-приложение на **React**, которое позволяет:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- просматривать список популярных криптовалют
+- отслеживать изменение цен и капитализацию
+- добавлять криптовалюты в избранное
+- искать по названию и символу
+- получать актуальные глобальные рыночные данные
 
-## Expanding the ESLint configuration
+Приложение корректно обрабатывает:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ошибки сети
+- лимиты API
+- пустые состояния данных
+
+---
+
+## 🛠️ Технологии
+
+### Frontend
+
+- React 18
+- Vite
+- JavaScript (ES6+)
+- CSS3
+
+### State & Hooks
+
+- useState
+- useEffect
+- useMemo
+- useCallback
+
+### Хранение данных
+
+- LocalStorage (избранное, выбранная валюта)
+
+### API
+
+- CoinGecko API
+
+---
+
+## ✨ Функциональность
+
+- 📊 Получение списка криптовалют
+- 🌍 Глобальная рыночная статистика
+- ⭐ Избранные криптовалюты (LocalStorage)
+- 🔍 Поиск с debouncing
+- 🔄 Автообновление данных
+- ⏱ Обработка timeout запросов
+- 🚫 Обработка ошибок сети и API
+- ⚠️ Обработка лимита запросов (429)
+- ♿ Accessibility (a11y)
+- 📱 Адаптивный дизайн
+
+---
+
+## ⚙️ Установка и запуск
+
+### 1️⃣ Клонировать репозиторий
+
+```bash
+git clone https://github.com/mariamorozovaa/crypto.git
+cd crypto
+```
+
+### 2️⃣ Установить зависимости
+
+```bash
+npm install
+```
+
+### 3️⃣ Создать .env файл
+
+```bash
+VITE_API_KEY=your_coingecko_api_key
+```
+
+### 4️⃣ Запуск в режиме разработки
+
+```bash
+npm run dev
+```
+
+### 5️⃣ Production build
+
+```bash
+npm run build
+```
+
+## 🌐 Используемый API
+
+CoinGecko API
+
+## 📄 Документация:
+
+https://www.coingecko.com/en/api/documentation
+
+## 🚦 Лимиты запросов:
+
+ограничены (обрабатывается статус 429)
+
+## 🔑 Используется demo API key через environment variables
+
+## 📁 Структура проекта
+
+```text
+src/
+├── components/
+│   ├── Header.jsx
+│   ├── CryptoList.jsx
+│   ├── CryptoCard.jsx
+│   ├── FavoritesList.jsx
+│   ├── Loader.jsx
+│   ├── ErrorMessage.jsx
+│   ├── SearchBar.jsx
+│   ├── CurrencySelector.jsx
+│   └── MarketStats.jsx
+│
+├── services/
+│   └── cryptoAPI.js
+│
+├── utils/
+│   └── localStorage.js
+│
+├── styles/
+│   └── *.css
+│
+├── App.jsx
+├── main.jsx
+└── index.html
+```
+
+## 🚧 Возможные улучшения
+
+📈 Графики цен (Chart.js / Recharts)
+🌙 Dark / Light mode
+🔔 Уведомления о росте/падении
+📱 PWA поддержка
+🔐 Авторизация пользователя
+🧪 Тестирование (Jest / React Testing Library)
+
+## 📎 Деплой
+
+Приложение задеплоено на Vercel
+Автоматический деплой настроен из GitHub.
+
+## 👩‍💻 Автор
+
+Мария Морозова
+GitHub: https://github.com/mariamorozovaa
