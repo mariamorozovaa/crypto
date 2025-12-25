@@ -125,21 +125,20 @@ function App() {
         <CurrencySelector currency={currency} onChange={(e) => handleCurrencyChange(e.target.value)} />
       </header>
 
-      <div role="alert">
-        {!loading && filteredCrypto.length === 0 && debouncedSearch && (
-          <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
-        )}
-        {!loading && crypto.length === 0 && !error && (
-          <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />
-        )}
-        {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
-      </div>
-
       <main>
         <section aria-labelledby="market-stats-title">
           <h2 id="market-stats-title">Статистика</h2>
           <MarketStats globalData={globalData} currency={currency} />
         </section>
+        <div role="alert">
+          {!loading && filteredCrypto.length === 0 && debouncedSearch && (
+            <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
+          )}
+          {!loading && crypto.length === 0 && !error && (
+            <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />
+          )}
+          {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
+        </div>
         <section aria-labelledby="search-title">
           <h2 id="search-title">Поиск криптовалют</h2>
           <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
