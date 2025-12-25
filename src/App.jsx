@@ -63,13 +63,13 @@ function App() {
     loadFavorites();
   }, []);
 
-  // useEffect(() => {
-  //   const intervalTime = isRateLimited ? 120000 : 60000;
-  //   const interval = setInterval(() => {
-  //     loadData({ isSilentRefresh: true });
-  //   }, intervalTime);
-  //   return () => clearInterval(interval);
-  // }, [currency, isRateLimited]);
+  useEffect(() => {
+    const intervalTime = isRateLimited ? 120000 : 60000;
+    const interval = setInterval(() => {
+      loadData({ isSilentRefresh: true });
+    }, intervalTime);
+    return () => clearInterval(interval);
+  }, [currency, isRateLimited]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -125,9 +125,9 @@ function App() {
       </div>
       {loading && <Loader />}
 
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <header>
         <Header />
-        <button onClick={handleRefresh} disabled={loading || isRateLimited} aria-label="Обновить данные">
+        <button className="refresh" onClick={handleRefresh} disabled={loading || isRateLimited} aria-label="Обновить данные">
           🔄 Обновить
         </button>
         <p aria-live="polite">Обновлено в {lastUpdate}</p>

@@ -14,7 +14,7 @@ export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
           onClick={() => onToggleFavorite(crypto.id)}
           aria-pressed={isFavorite}
           aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
-          style={{ color: "orange", fontSize: "25px", background: "white", border: "none", cursor: "pointer" }}>
+          style={{ color: "orange", fontSize: "25px", background: "none", border: "none", cursor: "pointer" }}>
           {isFavorite ? "★" : "☆"}
         </button>
       </div>
@@ -26,13 +26,11 @@ export default function CryptoCard({ crypto, isFavorite, onToggleFavorite }) {
 
       {crypto.price_change_percentage_24h > 0 ? (
         <p>
-          Изменение за 24 часа:
-          <span style={{ color: "green" }}> +{formatNumber(crypto.price_change_percentage_24h)}%</span>
+          Изменение за 24 часа: <span className="price-up">+{formatNumber(crypto.price_change_percentage_24h)}%</span>
         </p>
       ) : (
         <p>
-          Изменение за 24 часа:
-          <span style={{ color: "red" }}> {formatNumber(crypto.price_change_percentage_24h)}%</span>
+          Изменение за 24 часа: <span className="price-down"> {formatNumber(crypto.price_change_percentage_24h)}%</span>
         </p>
       )}
 

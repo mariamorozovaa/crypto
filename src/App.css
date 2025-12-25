@@ -1,3 +1,79 @@
 .app {
   padding: 20px;
 }
+.refresh,
+select {
+  min-height: 44px;
+  padding: 10px 16px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+  background-color: #22223b;
+}
+
+button {
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.refresh:hover,
+select:hover,
+.market-stats:hover,
+input:hover {
+  box-shadow: 0 5px 8px rgba(190, 124, 248, 0.302);
+  transform: translateY(-4px);
+}
+
+.refresh,
+select,
+.market-stats,
+input {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+section {
+  margin: 30px 0;
+}
+
+h2 {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.refresh:hover,
+select:hover {
+  transform: scale(1.03);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 45px;
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+}

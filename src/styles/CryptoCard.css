@@ -7,12 +7,31 @@
   padding: 15px;
   gap: 5px;
   width: 100%;
-  max-width: 330px;
+  /* max-width: 330px; */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.4s ease forwards;
 }
 
 .crypto-logo {
   width: 50px;
   height: 50px;
+}
+
+.crypto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 5px 8px rgba(190, 124, 248, 0.302);
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {

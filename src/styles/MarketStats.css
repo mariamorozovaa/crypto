@@ -1,6 +1,11 @@
 .market-stats {
   padding: 20px;
-  border: 1px solid black;
-  margin: 20px;
+  margin: 20px 0;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+  gap: 5px;
+  max-width: 100%;
 }

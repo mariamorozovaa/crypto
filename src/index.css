@@ -7,4 +7,30 @@
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 16px;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.crypto-card,
+.market-stats,
+.refresh,
+.loader-overlay {
+  background-color: var(--card);
+}
+
+.price-up {
+  color: var(--positive);
+}
+
+.price-down {
+  color: var(--negative);
+}
+
+:root {
+  --bg: #1a1a2e;
+  --card: #22223b;
+  --text: #ffffff;
+  --text-muted: #b5b5c3;
+  --positive: #4caf50;
+  --negative: #f44336;
 }
