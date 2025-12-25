@@ -130,6 +130,11 @@ function App() {
           <h2 id="market-stats-title">Статистика</h2>
           <MarketStats globalData={globalData} currency={currency} />
         </section>
+
+        <section aria-labelledby="search-title">
+          <h2 id="search-title">Поиск криптовалют</h2>
+          <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
+        </section>
         <div role="alert">
           {!loading && filteredCrypto.length === 0 && debouncedSearch && (
             <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
@@ -139,10 +144,6 @@ function App() {
           )}
           {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
         </div>
-        <section aria-labelledby="search-title">
-          <h2 id="search-title">Поиск криптовалют</h2>
-          <SearchBar value={searchQuery} onChange={(e) => handleSearch(e.target.value)} onClear={() => setSearchQuery("")} />
-        </section>
         {favorites.length > 0 && (
           <section aria-labelledby="crypto-favorites-title">
             <h2 id="crypto-favorites-title">Избранное</h2>
