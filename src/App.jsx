@@ -114,15 +114,6 @@ function App() {
 
   return (
     <div className="app">
-      <div role="alert">
-        {!loading && filteredCrypto.length === 0 && debouncedSearch && (
-          <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
-        )}
-        {!loading && crypto.length === 0 && !error && (
-          <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />
-        )}
-        {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
-      </div>
       {loading && <Loader />}
 
       <header>
@@ -133,6 +124,16 @@ function App() {
         <p aria-live="polite">Обновлено в {lastUpdate}</p>
         <CurrencySelector currency={currency} onChange={(e) => handleCurrencyChange(e.target.value)} />
       </header>
+
+      <div role="alert">
+        {!loading && filteredCrypto.length === 0 && debouncedSearch && (
+          <ErrorMessage message={`Ничего не найдено по запросу "${debouncedSearch}"`} />
+        )}
+        {!loading && crypto.length === 0 && !error && (
+          <ErrorMessage message="Нет данных для отображения" onRetry={handleRefresh} />
+        )}
+        {error && <ErrorMessage message={error} onRetry={!isRateLimited ? handleRefresh : undefined} />}
+      </div>
 
       <main>
         <section aria-labelledby="market-stats-title">

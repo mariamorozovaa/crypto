@@ -58,7 +58,7 @@ select:hover {
   transform: scale(1.03);
 }
 
-button:active {
+.refresh:active {
   transform: scale(0.97);
 }
 
